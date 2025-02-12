@@ -1,0 +1,52 @@
+
+# Dependencies
+node_modules/
+bower_components/
+
+# Production
+dist/
+build/
+
+# Angular specific
+.angular/
+.angular-cache/
+coverage/
+
+# IDE and Editor settings
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs and debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment settings
+*.env
+.env.*
+.env.local
+.env.*.local
+*.local
+
+# Angular testing
+test-out/
+.jasmine/
+.karma/
+
+# Misc
+!package.json
+!tsconfig.json
+!angular.json
+*.bak
+*.tmp
+*.old
