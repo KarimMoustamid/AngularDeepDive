@@ -62,7 +62,7 @@
       <nav>Notes</nav>
       <div>
         <textarea placeholder="Notes" rows="3" [(ngModel)]="contact.notes" name="notes"
-          [restrictedWords]="['foo', 'bar']" #notes="ngModel" [class.error]="notes.invalid">
+          [restrictedWords]="['fire','gun']" #notes="ngModel" [class.error]="notes.invalid">
         </textarea>
         <em *ngIf="notes.errors?.['restrictedWords']">Restricted words found: {{notes.errors?.['restrictedWords']}}</em>
       </div>
