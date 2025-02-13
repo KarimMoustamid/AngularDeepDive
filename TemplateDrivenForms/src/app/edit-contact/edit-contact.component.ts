@@ -10,7 +10,7 @@ import {ProfileIconSelectorComponent} from "../profile-icon-selector/profile-ico
 
 
 @Component({
-  imports: [CommonModule, FormsModule, RestrictedWordsValidator, ProfileIconSelectorComponent],
+  imports: [CommonModule, FormsModule, RestrictedWordsValidator, ProfileIconSelectorComponent, DateValueAccessorDirective],
   standalone: true,
   templateUrl: './edit-contact.component.html',
   styleUrls: ['./edit-contact.component.css']
@@ -21,6 +21,7 @@ export class EditContactComponent implements OnInit {
 
   contact: Contact = {
     id: '',
+    icon: '',
     personal: false,
     firstName: '',
     lastName: '',
