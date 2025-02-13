@@ -20,12 +20,7 @@ export class DateValueAccessorDirective implements ControlValueAccessor {
     }
 
     @HostListener('input', ['$event.target.valueAsDate']) private onChange!: Function;
-
-    registerOnChanged(fn: Function): void {
-        this.onChange = (valueAsDate: Date) => {
-            fn(valueAsDate);
-        };
-    }
+    @HostListener('blur', []) private onTouched!: Function;
 
     writeValue(newValue: any): void {
         if (newValue instanceof Date)
@@ -33,15 +28,14 @@ export class DateValueAccessorDirective implements ControlValueAccessor {
     }
 
     registerOnChange(fn: any): void {
-        throw new Error('Method not implemented.');
+        this.onChange = (valueAsDate: Date) => {
+            fn(valueAsDate);
+        };
     }
 
-    registerOnTouched(fn: any): void {
-        throw new Error('Method not implemented.');
+    registerOnTouched(fn: Function): void {
+        this.onTouched = fn;
     }
 
-    setDisabledState?(isDisabled: boolean): void {
-        throw new Error('Method not implemented.');
-    }
 
 }

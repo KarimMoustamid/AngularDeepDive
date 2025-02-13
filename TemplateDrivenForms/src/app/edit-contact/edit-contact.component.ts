@@ -5,9 +5,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Contact, phoneTypeValues, addressTypeValues } from '../contacts/contact.model';
 import { ContactsService } from '../contacts/contacts.service';
 import {RestrictedWordsValidator} from "../directives/validators/restricted-words-validator.directive";
+import {DateValueAccessorDirective} from "../directives/date-value-accessor/date-value-accessor.directive";
+
 
 @Component({
-  imports: [CommonModule, FormsModule, RestrictedWordsValidator],
+  imports: [CommonModule, FormsModule, RestrictedWordsValidator, DateValueAccessorDirective],
   standalone: true,
   templateUrl: './edit-contact.component.html',
   styleUrls: ['./edit-contact.component.css']
