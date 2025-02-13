@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Contact, phoneTypeValues, addressTypeValues } from '../contacts/contact.model';
 import { ContactsService } from '../contacts/contacts.service';
-import {RestrictedWordsValidator} from "../validators/restricted-words-validator.directive";
+import {RestrictedWordsValidator} from "../directives/validators/restricted-words-validator.directive";
 
 @Component({
   imports: [CommonModule, FormsModule, RestrictedWordsValidator],
@@ -21,7 +21,7 @@ export class EditContactComponent implements OnInit {
     personal: false,
     firstName: '',
     lastName: '',
-    dateOfBirth: '',
+    dateOfBirth: null,
     favoritesRanking: 0,
     phone: {
       phoneNumber: '',
