@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {Observable, share, of, from} from "rxjs";
+import {Observable, share, of, from, fromEvent} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.FromCreationFunction()
+    this.FromEventCreationFunction()
   }
 
   // - RXJS Basics
@@ -290,6 +290,41 @@ export class AppComponent implements OnInit {
     })
   }
 
+  FromEventCreationFunction() {
+    const observer = {
+      next: (value: Event) => console.log("Button Clicked : ", value),
+    }
+
+    const triggerButton = document.querySelector('#trigger-button');
+
+    // if (triggerButton !== null) {
+    //   const fromEventObservable = fromEvent(triggerButton, 'click').subscribe(observer);
+    //   setTimeout(() => {
+    //     fromEventObservable.unsubscribe();
+    //   }, 1000)
+    // }
+
+
+    const triggerClick$ = new Observable<Event>(subscriber => {
+      const clickHandler = (event: Event) => {
+        console.log("Event callback executed ")
+        subscriber.next(event);
+      }
+
+      if (triggerButton !== null)
+        triggerButton.addEventListener('click', clickHandler);
+
+      return () => {
+        if (triggerButton !== null)
+          triggerButton.removeEventListener('click', clickHandler)
+      }
+    })
+
+    const triggerClickSub = triggerClick$.subscribe(observer)
+    setTimeout(() => {
+      triggerClickSub.unsubscribe();
+    }, 3000)
+  }
 
 
 }
