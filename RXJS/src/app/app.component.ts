@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.WhatIsSteam();
+    this.SubscriptionLifeCycle();
   }
 
   IntroToRXJS() {
@@ -135,5 +135,15 @@ export class AppComponent implements OnInit {
       next: value => console.log(`Stream2 emitted: ${value}`),
       complete: () => console.log(`Stream2 completed`)
     });
+  }
+
+  SubscriptionLifeCycle() {
+    // Observable that doest emit anything
+    const observable$ = new Observable<string>(subscriber => {
+      console.log('Observable Executed');
+    });
+    console.log('Before Observable Subscribed');
+    observable$.subscribe();
+    console.log('After Observable Subscribed');
   }
 }
