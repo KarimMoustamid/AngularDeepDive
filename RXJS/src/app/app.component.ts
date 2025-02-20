@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {Observable, share, of} from "rxjs";
+import {Observable, share, of, from} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.OfCreationFunction()
+    this.FromCreationFunction()
   }
 
   // - RXJS Basics
@@ -265,6 +265,29 @@ export class AppComponent implements OnInit {
 
     ourOwnOf(1, 2, 3, 4, 5).subscribe(observer)
 
+  }
+
+  FromCreationFunction() {
+    const observer = {
+      next: (value: number) => console.log(value),
+      complete: () => console.log("Completed")
+    };
+
+    console.log("From Creation Function")
+    from([1, 2, 3, 4, 5]).subscribe(observer)
+
+    console.log("From Creation Function from Promise")
+    const somePromise = new Promise<string>((resolve, reject) => {
+      // resolve('Resolved !!!');
+      reject('Rejected !!!');
+    });
+
+    const fromPromise$ = from(somePromise);
+    fromPromise$.subscribe({
+      next: value => console.log(value),
+      error: err => console.error(err),
+      complete: () => console.log("Completed")
+    })
   }
 
 
