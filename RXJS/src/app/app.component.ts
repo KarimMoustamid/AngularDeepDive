@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {Observable, share} from "rxjs";
+import {Observable, share, of} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -14,9 +14,10 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.TypesOfObservables()
+    this.OfCreationFunction()
   }
 
+  // - RXJS Basics
   IntroToRXJS() {
     // - Example 1: Emit simple values over time
     const observable1$ = new Observable<string>(subscriber => {
@@ -230,4 +231,42 @@ export class AppComponent implements OnInit {
       });
     }, 2500);
   }
+
+  // - Creation Functions :
+
+  OfCreationFunction() {
+    const observer = {
+      next: (value: number) => console.log(value),
+      complete: () => console.log("Completed")
+    };
+
+    // const observable$ = new Observable<number>(subscriber => {
+    //   subscriber.next(1)
+    //   subscriber.next(2)
+    //   subscriber.next(3)
+    //   subscriber.next(4)
+    //   subscriber.next(5)
+    //   subscriber.complete()
+    // })
+    //
+    // observable$.subscribe(observer)
+
+    of(1, 2, 3, 4, 5).subscribe(observer)
+
+    function ourOwnOf(...args: number[]) {
+      return new Observable<any>(subscriber => {
+        for (const arg of args) {
+          subscriber.next(arg);
+        }
+        subscriber.complete();
+      });
+
+    }
+
+    ourOwnOf(1, 2, 3, 4, 5).subscribe(observer)
+
+  }
+
+
+
 }
