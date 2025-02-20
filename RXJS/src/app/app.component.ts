@@ -149,10 +149,11 @@ export class AppComponent implements OnInit {
       subscriber.next("Alis")
       subscriber.next("Karim")
       setTimeout(() => subscriber.next("Ali"), 2000)
+      subscriber.error("ops I caught an error here :/")
       // subscriber.complete()
 
       return () => {
-        console.log("Teardown");
+        console.info("Teardown");
       }
     })
 
