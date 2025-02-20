@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {Observable} from "rxjs";
+import {Observable, share} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.SubscriptionLifeCycle()
+    this.TypesOfObservables()
   }
 
   IntroToRXJS() {
@@ -149,8 +149,9 @@ export class AppComponent implements OnInit {
       subscriber.next("Alis")
       subscriber.next("Karim")
       setTimeout(() => subscriber.next("Ali"), 2000)
-      subscriber.error("ops I caught an error here :/")
-      // subscriber.complete()
+      // subscriber.error("ops I caught an error here :/")
+      subscriber.complete()
+      subscriber.next("Trump should not run")
 
       return () => {
         console.info("Teardown");
@@ -163,5 +164,70 @@ export class AppComponent implements OnInit {
       console.log('Unsubscribing...');
       subscription.unsubscribe();
     }, 3000);
+  }
+
+  TypesOfObservables() {
+
+    // - Example of a cold observable
+    const coldObservable$ = new Observable<number>(subscriber => {
+      console.log("Cold Observable is producing values...");
+      subscriber.next(1);
+      setTimeout(() => subscriber.next(2), 1000);
+      setTimeout(() => subscriber.next(3), 2000);
+      setTimeout(() => subscriber.complete(), 3000);
+    });
+
+    console.log("Subscribing to Cold Observable...");
+
+    // - Subscriber 1
+    const subscription1 = coldObservable$.subscribe({
+      next: value => console.log(`Subscriber 1: ${value}`),
+      complete: () => console.log("Subscriber 1: Completed")
+    });
+
+    setTimeout(() => {
+      console.log("Subscribing to Cold Observable with Subscriber 2...");
+      // Subscriber 2
+      const subscription2 = coldObservable$.subscribe({
+        next: value => console.log(`Subscriber 2: ${value}`),
+        complete: () => console.log("Subscriber 2: Completed")
+      });
+    }, 1500);
+
+
+    // - Example of a hot observable
+    const hotObservable$ = new Observable<number>(subscriber => {
+      console.log("Hot Observable is producing values...");
+      let counter = 1;
+      const intervalId = setInterval(() => {
+        subscriber.next(counter++);
+        if (counter > 5) {
+          clearInterval(intervalId);
+          subscriber.complete();
+        }
+      }, 1000);
+
+      return () => {
+        console.log("Hot Observable: Teardown logic executed");
+        clearInterval(intervalId);
+      };
+    }).pipe(share()); // Using the share operator to make it hot
+
+    console.log("Subscribing to Hot Observable...");
+
+    // - Subscriber 1
+    // const hotSubscription1 = hotObservable$.subscribe({
+    //   next: value => console.log(`Hot Subscriber 1: ${value}`),
+    //   complete: () => console.log("Hot Subscriber 1: Completed")
+    // });
+
+    setTimeout(() => {
+      console.log("Subscribing to Hot Observable with Subscriber 2...");
+      // Subscriber 2
+      const hotSubscription2 = hotObservable$.subscribe({
+        next: value => console.log(`Hot Subscriber 2: ${value}`),
+        complete: () => console.log("Hot Subscriber 2: Completed")
+      });
+    }, 2500);
   }
 }
