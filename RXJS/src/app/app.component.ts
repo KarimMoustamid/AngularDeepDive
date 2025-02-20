@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.SubscriptionLifeCycle();
+    this.EmitMultipleValues()
   }
 
   IntroToRXJS() {
@@ -137,13 +137,36 @@ export class AppComponent implements OnInit {
     });
   }
 
-  SubscriptionLifeCycle() {
-    // Observable that doest emit anything
+  BasicObservable() {
+
+    const observer = {
+      next: (value: string) => console.log(`Observer: ${value}`),
+      complete: () => console.log('Observer: Completed')
+    };
+
+    // observer.next("Alis")
+    // observer.next("Karim")
+
     const observable$ = new Observable<string>(subscriber => {
       console.log('Observable Executed');
+      subscriber.next("Alis")
+      subscriber.next("Karim")
+      subscriber.complete()
     });
+
     console.log('Before Observable Subscribed');
-    observable$.subscribe();
+    observable$.subscribe(observer);
     console.log('After Observable Subscribed');
+  }
+
+  EmitMultipleValues() {
+
+    const observable$ = new Observable<string>(subscriber => {
+      subscriber.next("Alis")
+      subscriber.next("Karim")
+      setTimeout(() => subscriber.next("Ali"), 2000)
+    })
+
+    observable$.subscribe(value => console.log(value))
   }
 }
