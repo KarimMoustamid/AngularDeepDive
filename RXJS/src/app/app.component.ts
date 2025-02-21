@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {Observable, share, of, from, fromEvent} from "rxjs";
+import {Observable, share, of, from, fromEvent, timer, interval} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.FromEventCreationFunction()
+    this.IntervalCreationFunction()
   }
 
   // - RXJS Basics
@@ -326,5 +326,57 @@ export class AppComponent implements OnInit {
     }, 3000)
   }
 
+  TimerCreationFunction() {
+    const observer = {
+      next: (value: number) => console.log(value),
+      complete: () => console.log("Completed")
+    };
+
+    // timer(2000).subscribe(observer)
+
+    const timer$ = new Observable<number>(subscriber => {
+      const timeoutId$ = setTimeout(() => {
+        subscriber.next(0);
+        subscriber.complete();
+      }, 2000)
+
+      return () => {
+        clearTimeout(timeoutId$)
+      }
+    })
+    const sub = timer$.subscribe(observer)
+    setTimeout(() => {
+      sub.unsubscribe();
+    }, 1000)
+  }
+
+  IntervalCreationFunction() {
+    const observer = {
+      next: (value: number) => console.log(value),
+      complete: () => console.log("Completed")
+    };
+
+
+    // const sub = interval(1000).subscribe(observer)
+    // setTimeout(() => {
+    //   sub.unsubscribe();
+    // }, 5000)
+
+    let count = 0;
+    const intervalObservable$ = new Observable<number>(subscriber => {
+      const intervalId = setInterval(() => {
+        subscriber.next(count++);
+      }, 1000)
+
+      // return () => {
+      //   clearTimeout(timeoutId$)
+      // }
+    })
+
+    const sub = intervalObservable$.subscribe(observer)
+    setTimeout(() => {
+      sub.unsubscribe();
+    }, 5000)
+  }
 
 }
