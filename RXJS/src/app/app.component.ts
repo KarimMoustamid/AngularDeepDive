@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {Observable, share, of, from, fromEvent, timer, interval} from "rxjs";
+import {Observable, share, of, from, fromEvent, timer, interval, forkJoin, map} from "rxjs";
+import {ajax} from "rxjs/internal/ajax/ajax";
+import {combineLatest} from "rxjs/internal/operators/combineLatest";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.IntervalCreationFunction()
+    this.ForkJoinCreationFunction()
   }
 
   // - RXJS Basics
@@ -379,4 +381,49 @@ export class AppComponent implements OnInit {
     }, 5000)
   }
 
+  ForkJoinCreationFunction() {
+
+    const randomName$ = ajax<any>('https://random-data-api.com/api/name/random_name');
+    const randomNation$ = ajax<any>('https://random-data-api.com/api/nation/random_nation');
+    const randomFood$ = ajax<any>('https://random-data-api.com/api/food/random_food');
+
+    // randomName$.subscribe((ajaxResponse : any) => console.log("Name :",ajaxResponse.response.first_name));
+    // randomNation$.subscribe(ajaxResponse => console.log("Capital : " ,ajaxResponse.response.capital));
+    // randomFood$.subscribe(ajaxResponse => console.log("Dish :",ajaxResponse.response.dish));
+
+    forkJoin([randomName$, randomNation$, randomFood$]).subscribe(([nameAjax, nationAjax, foodAjax]) => {
+      console.log("Name:", nameAjax.response.first_name);
+      console.log("Capital:", nationAjax.response.capital);
+      console.log("Dish:", foodAjax.response.dish);
+    });
+  }
+
+  CombineLatestCreationFunction() {
+
+    const observable1$ = new Observable<number>(subscriber => {
+      let count1 = 0;
+      const intervalId1 = setInterval(() => {
+        subscriber.next(count1++);
+      }, 1000);
+
+      return () => clearInterval(intervalId1);
+    });
+
+    const observable2$ = new Observable<string>(subscriber => {
+      const names = ['Alice', 'Bob', 'Charlie'];
+      let index = 0;
+      const intervalId2 = setInterval(() => {
+        subscriber.next(names[index++ % names.length]);
+      }, 1500);
+
+      return () => clearInterval(intervalId2);
+    });
+
+    //   combineLatest([observable1$, observable2$])
+    //     .pipe(map(([value1, value2]) => `Number: ${value1}, Name: ${value2}`))
+    //     .subscribe({
+    //       next: value => console.log(value),
+    //       complete: () => console.log('Completed')
+    //     });
+  }
 }
