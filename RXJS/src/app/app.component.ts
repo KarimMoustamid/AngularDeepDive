@@ -1,6 +1,20 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {Observable, share, of, from, fromEvent, timer, interval, forkJoin, map} from "rxjs";
+import {
+  Observable,
+  share,
+  of,
+  from,
+  fromEvent,
+  timer,
+  interval,
+  forkJoin,
+  map,
+  filter,
+  tap,
+  debounceTime,
+  catchError
+} from "rxjs";
 import {ajax} from "rxjs/internal/ajax/ajax";
 import {combineLatest} from "rxjs/internal/operators/combineLatest";
 
@@ -16,7 +30,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.ForkJoinCreationFunction()
+    this.CatchErrorOperatorExample()
   }
 
   // - RXJS Basics
@@ -426,4 +440,78 @@ export class AppComponent implements OnInit {
     //       complete: () => console.log('Completed')
     //     });
   }
+
+  // - Pipe Operators
+
+
+  FilterOperatorExample() {
+    const observable$ = of(1, 2, 3, 4, 5);
+
+    const observer = {
+      next: (value: number) => console.log(value),
+      complete: () => console.log("Completed")
+    };
+
+    observable$
+      .pipe(
+        filter(value => value % 2 === 0) // Applying filter operator to allow only even numbers
+      )
+      .subscribe(observer);
+  }
+
+  MapOperatorExample() {
+    const observable$ = of(1, 2, 3, 4, 5);
+
+    const observer = {
+      next: (value: number) => console.log(value),
+      complete: () => console.log("Completed")
+    };
+
+    observable$
+      .pipe(
+        map(value => value * 2) // Applying map operator to multiply each value by 2
+      )
+      .subscribe(observer);
+  }
+
+  DebounceTimeOperatorExample() {
+    const sliderInput = document.querySelector('#slider');
+
+    if (sliderInput != null)
+      fromEvent(sliderInput, 'input').pipe(
+        debounceTime(2000),
+        tap((event: Event) => {
+          const target = event.target as HTMLInputElement;
+          console.log(target.value);
+        })
+      ).subscribe();
+  }
+
+
+  CatchErrorOperatorExample() {
+
+    const observable$ = of(1, 2, 'error', 4, 5);
+
+    const observer = {
+      next: (value: number | string) => console.log(value),
+      error: (err: any) => console.error("Error caught: ", err),
+      complete: () => console.log("Completed")
+    };
+
+    observable$
+      .pipe(
+        map(value => {
+          if (value === 'error') {
+            throw new Error('An error occurred!');
+          }
+          return value;
+        }),
+        catchError(err => {
+          console.error("Handling error within catchError: ", err.message);
+          return of('Default Value'); // Fallback value
+        })
+      )
+      .subscribe(observer);
+  }
+
 }
