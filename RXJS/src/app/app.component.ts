@@ -13,7 +13,7 @@ import {
   filter,
   tap,
   debounceTime,
-  catchError
+  catchError, mergeMap, delay
 } from "rxjs";
 import {ajax} from "rxjs/internal/ajax/ajax";
 import {combineLatest} from "rxjs/internal/operators/combineLatest";
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.CatchErrorOperatorExample()
+    this.FlatMapOperatorExample()
   }
 
   // - RXJS Basics
@@ -512,6 +512,24 @@ export class AppComponent implements OnInit {
         })
       )
       .subscribe(observer);
+  }
+
+  FlatMapOperatorExample() {
+    const observable$ = of(1, 2, 3, 4, 5);
+
+    observable$
+        .pipe(
+            mergeMap(value => {
+              return of(value * 2).pipe(
+                  delay(1000), // Simulating async operation
+                  tap(transformedValue => console.log(`Transformed value: ${transformedValue}`))
+              );
+            })
+        )
+        .subscribe({
+          next: value => console.log(`Final value: ${value}`),
+          complete: () => console.log("Completed")
+        });
   }
 
 }
